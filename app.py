@@ -11,6 +11,12 @@ from sqlalchemy import create_engine, text
 # ============================================================
 # PAGE CONFIG
 # ============================================================
+st.write("DATABASE_URL exists:", "DATABASE_URL" in st.secrets)
+st.write("DATABASE_URL is not empty:", bool(st.secrets.get("DATABASE_URL", "")))
+st.write("USE_TEST_TABLES:", st.secrets.get("USE_TEST_TABLES", "NOT FOUND"))
+
+db_url = st.secrets["DATABASE_URL"]
+engine = create_engine(db_url)
 
 st.title("Dashboard")
 
@@ -163,7 +169,7 @@ DATABASE_URL = st.secrets["DATABASE_URL"]
 
 try:
     USE_TEST_TABLES = (
-        str(st.secrets["USE_TEST_TABLES"]).lower() == "false"
+        str(st.secrets["USE_TEST_TABLES"]).lower() == "true"
     )
 except Exception:
     USE_TEST_TABLES = true
