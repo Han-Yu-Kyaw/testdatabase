@@ -12,6 +12,8 @@ from sqlalchemy import create_engine, text
 # PAGE CONFIG
 # ============================================================
 
+st.title("Dashboard")
+
 st.set_page_config(
     page_title="Alliz Member Needs Dashboard",
     page_icon="📊",
@@ -161,10 +163,10 @@ DATABASE_URL = st.secrets["DATABASE_URL"]
 
 try:
     USE_TEST_TABLES = (
-        str(st.secrets["USE_TEST_TABLES"]).lower() == "true"
+        str(st.secrets["USE_TEST_TABLES"]).lower() == "false"
     )
 except Exception:
-    USE_TEST_TABLES = True
+    USE_TEST_TABLES = true
 
 
 if USE_TEST_TABLES:
