@@ -11,9 +11,43 @@ from sqlalchemy import create_engine, text
 # ============================================================
 # PAGE CONFIG
 # ============================================================
-st.write("DATABASE_URL exists:", "DATABASE_URL" in st.secrets)
-st.write("DATABASE_URL is not empty:", bool(st.secrets.get("DATABASE_URL", "")))
-st.write("USE_TEST_TABLES:", st.secrets.get("USE_TEST_TABLES", "NOT FOUND"))
+import socket
+from sqlalchemy.engine import make_url
+
+# Read database URL securely
+DATABASE_URL = st.secrets["DATABASE_URL"]
+
+# Parse URL without displaying credentials
+db_info = make_url(DATABASE_URL)
+
+db_host = db_info.host
+db_port = db_info.port or 5432
+
+st.write("Database URL loaded:", bool(DATABASE_URL))
+st.write("Database host found:", bool(db_host))
+st.write("Database port:", db_port)
+
+# Test DNS
+try:
+    socket.gethostbyname(db_host)
+    st.success("✅ Database hostname can be resolved")
+except Exception as e:
+    st.error("❌ Database hostname cannot be resolved")
+    st.write(type(e).__name__)
+
+# Test network connection
+try:
+    connection = socket.create_connection(
+        (db_host, db_port),
+        timeout=10
+    )
+    connection.close()
+
+    st.success("✅ Streamlit can reach the database server")
+
+except Exception as e:
+    st.error("❌ Streamlit cannot reach the database server")
+    st.write("Error type:", type(e).__name__)
 
 db_url = st.secrets["DATABASE_URL"]
 engine = create_engine(db_url)
